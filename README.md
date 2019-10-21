@@ -1,4 +1,4 @@
-# Coverage-based-functional-analyisis-in-a-MAG-centric-view
+# Coverage-based functional analysis 
 A example of how to investigate functional potential potential based on coverage with a MAG-centric view.
 
 ![Workflow](./img/functional_analyisis_demo.jpg)
