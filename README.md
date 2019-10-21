@@ -12,6 +12,12 @@ Consequently we deployed comparative analysis strategy that utilizes KEGG Module
 
 Although we have focused on permafrost metagenomics in this work, similar strategies applied here are applicable to other metagenomic studies, especially for well-characterized environments such as human gut with more accurate taxonomic classification and available MAGs.
 
+# Dependencies
+* Python 3.4 or higher
+* R 3.5.0 or higher
+* Python packages: pandas, numpy
+* R packages: data.table
+* Bioinformatic tools: BBMAP, Prodigal, GhostKOALA
 
 # Example
 
