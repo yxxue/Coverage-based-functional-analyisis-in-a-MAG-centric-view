@@ -115,7 +115,7 @@ def init():
     python calculate_module_abundance_per_group.py -gk gene_ko_anno_ghostkoala.txt -ko ko00002.keg -cg NORM_group.csv
 
     '''
-    parser = argparse.ArgumentParser(description='Merge coverage info \n',epilog=example_text, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(description='Calculate module abundance per group with a MAG-centric view\n',epilog=example_text, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser._optionals.title = 'Mandatory Arguments'
     parser.add_argument('-gk', required=True, help='Gene-KO annotation table')
     parser.add_argument('-ko', required=True, help='KEGG module database')
