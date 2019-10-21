@@ -72,15 +72,73 @@ k127_201593	metabat.113	0.00624759173329129	0.21964470673582845	3.18823133461074
 
 ## Assign contigs into groups based on their normalized coverage distribution
 We pre-defined several groups combining the coverage patterns with geographical significance.
-![groups](./img/group.png)
+![](./img/groups.png)
 
+Normal groups: ['AL','BO','PL_SUB','PL_ALL','PL_P1','PL_P2','PL_P3','PL_P4','LO','UN']    
+Special groups: ['KI','KD']    
 
+This Rscript will parse 'ctg_bin_cov.norm.csv' and assign each contigs into above groups. Please notice that our grouping functions are based on 5 svalbard samples, but you could  modify the code easily to build your own grouping functions. 
 ```
 Rscript group_ctg_by_norm_cov.R
 ```
+It will generate two output files:   
+'NORM_group.csv' is the comma-separated file of contigs in normal groups and their coverage : Contig_ID, Bin_ID, groups,coverage   
+'SPE_group.csv' is the comma-separated file of contigs in special groups and their coverage : Contig_ID, Bin_ID, group, coverage   
+```
+> head NORM_group.csv
+Contig_ID,Bin_ID,group,2-1-2.norm_fold,2-8-2.norm_fold,2-9-2.norm_fold,2-10-2.norm_fold,2-12-2.norm_fold
+k127_105473,metabat.113,PL_SUB,0.384722991813583,0.823902543641035,2.90880703894114,0.367355298331943,0.572097665684297
+k127_240316,metabat.113,PL_ALL,0.411119884634348,1.01242064482673,0.997039716879737,1.01335275227331,0.850985059075996
+k127_333437,metabat.113,BO,0.537859860738673,1.5774060323034,3.3252749798168,0.608724869049324,0.994085065358354
+> head SPE_group.csv
+Contig_ID,Bin_ID,group,2-1-2.norm_fold,2-8-2.norm_fold,2-9-2.norm_fold,2-10-2.norm_fold,2-12-2.norm_fold,SPE_group
+k127_22792,metabat.179,PL_SUB,0.140936074597772,1.82378979481783,0.723382049339827,15.7402966653593,0.389153403632278,KI
+k127_26430,metabat.179,PL_SUB,0.129880126923152,1.6135063435867,0.603069492044171,16.9823234993715,0.287868588761927,KI
+k127_64248,metabat.179,PL_ALL,0.291172665336028,2.17412142117306,0.896483760679003,17.604530967007,0.537964643878246,KI
 
-* Calculate module abundance in each group with a MAG-centric view
+```
+
+## Calculate module abundance in each group with a MAG-centric view
+
+* Gene prediction
+```
+prodigal -i all_bins.ctg.fasta -f gff -p meta -o all_bins.ctg.genes -a all_bins.ctg.prodigal.gene.faa
+```
+* Get KEGG gene annotation results
+Upload 'all_bins.ctg.prodigal.gene.faa' to GhostKOALA (https://www.kegg.jp/ghostkoala/) to obtain gene-based KEGG annotation results 'gene_ko_anno_ghostkoala.txt'.
+```
+> head gene_ko_anno_ghostkoala.txt
+k127_2851_1	K03496
+k127_2851_2	K01918
+k127_3198_1
+k127_3198_2	K19055
+k127_3198_3	K05838
+k127_10351_1
+k127_10351_2	K02849
+k127_10351_3
+```
+* Download KEGG module database 'ko00002.keg' from the webiste: https://www.genome.jp/kegg-bin/get_htext?ko00002.keg
+* Calculate module abundance of groups with a MAG-centric view      
+
+Our script 'calculate_module_abundance_per_group.py' will:
+1) Obtain Kegg module information
+2) Convert gene-based KO annotation to contig-based KO annotation
+3) Detect existed modules by search KO overlaps
+4) Calculate module abundance for each group in a MAG-centric view
+5) Generate module abundance table for each group   
+
+Please notice that input coverage table '-cg' is supporting multiple samples with your own coverage-group table, but headers of first three columns need be : 'Contig_ID', 'Bin_ID', 'group'. 
 
 ```
 python calculate_module_abundance_per_group.py -gk gene_ko_anno_ghostkoala.txt -ko ko00002.keg -cg NORM_group.csv
+```
+It will generate an output file 'module_abundance_per_group.csv' to record each module's abundance per group.
+```
+└─[0] <git:(master 22756ed) > head module_abundance_per_group.csv
+module_id,AL,BO,LO,PL_ALL,PL_P1,PL_P2,PL_P3,PL_P4,PL_SUB,UN,module_anno
+M00119,14.547502498398673,18.540198037978385,3.2369715065271345,40.56229556414226,2.688729318142015,1.0998614178648407,1.1734430867038539,5.91916439234577,42.965435192662554,7.9435435001417165,"Pantothenate biosynthesis, valine/L-aspartate => pantothenate [PATH:map00770 map01100 map01110]"
+M00080,4.140475423558032,2.393736785159976,0.6677998871085606,4.614304865477866,0.2083344317997251,,0.46412165732875005,1.024715052006364,5.781767244396411,1.0437647814505975,"Lipopolysaccharide biosynthesis, inner core => outer core => O-antigen [PATH:map00540 map01100]"
+M00237,5.360651244413878,47.096112636051515,3.518077128591841,93.01618715816905,2.5279572448939973,0.49808514826796924,0.3920927950182258,2.688530724555236,53.75560499778051,4.279749561614213,Branched-chain amino acid transport system [PATH:map02010] [BR:ko02000]
+M00022,13.722901906067653,8.974117749209022,2.3697324517044014,25.758456822434333,2.0382777580247344,1.4058187983433923,1.365257395536771,4.111569553305457,29.989880343651063,2.5787238704971926,"Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate [PATH:map00400 map01230 map01100 map01110 map01130]"
+M00335,17.772486666644905,32.879956599311726,3.122522192935662,34.791934112490004,2.2059218926102098,1.7320168349471106,1.1127508687096623,7.0285652320939365,33.894350511977485,5.9890065009252105,Sec (secretion) system [PATH:map03070] [BR:ko02044]
 ```
