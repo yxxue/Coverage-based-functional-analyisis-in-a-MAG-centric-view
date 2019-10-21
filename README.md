@@ -121,6 +121,10 @@ k127_10351_3
 
 * Calculate module abundance of groups with a MAG-centric view.      
 
+```
+> python calculate_module_abundance_per_group.py -gk gene_ko_anno_ghostkoala.txt -ko ko00002.keg -cg NORM_group.csv
+```
+
 The script 'calculate_module_abundance_per_group.py' will:
 1) Obtain Kegg module information
 2) Convert gene-based KO annotation to contig-based KO annotation
@@ -128,11 +132,9 @@ The script 'calculate_module_abundance_per_group.py' will:
 4) Calculate module abundance for each group in a MAG-centric view
 5) Generate module abundance table for each group   
 
-Please notice that input coverage table '-cg' is supporting multiple samples with your own coverage-group table, but headers of first three columns need to be : 'Contig_ID', 'Bin_ID', 'group'. 
+Please notice that input coverage table '-cg' is supporting multiple samples with your own coverage-group table, but headers of first three columns need to be : 'Contig_ID', 'Bin_ID', 'group'.    
 
-```
-> python calculate_module_abundance_per_group.py -gk gene_ko_anno_ghostkoala.txt -ko ko00002.keg -cg NORM_group.csv
-```
+
 It will generate the final output file 'module_abundance_per_group.csv' to record each module's abundance per group.   
 ```
 > head module_abundance_per_group.csv
