@@ -18,7 +18,7 @@ Although we have focused on permafrost metagenomics in this work, similar strate
 Here we show a example of how to achieve this analysis with Svalbard permafrost metagnome. There are five samples in our dataset: sample_ids = ['2-1-2', '2-8-2', '2-9-2', '2-10-2', '2-12-2']. 
 
 
-* Calculate mapping statistics (coverage, # of mapped reads, etc)    
+## Calculate mapping statistics (coverage, # of mapped reads, etc)    
 
 
 Firstly, we merged contigs of all MAGs (all_bins.ctg.fasata), and then mapped using BBMAP to get mapping statistics(covstat, scafstat, statsfile) for each sample (see example below). Please add 'nzo=f' to make sure BBMAP will print contig with all coverage rather than only nonzero coverage.  
@@ -27,7 +27,7 @@ Firstly, we merged contigs of all MAGs (all_bins.ctg.fasata), and then mapped us
 bbmap.sh ref=all_bins.ctg.fasta in1=2-1-2.R1.fa in2=2-1-2.R2.fa nzo=f ow=t threads=40 sortscafs=t scafstats=2-1-2.scafstats.txt covstats=2-1-2.covstats.txt statsfile=2-1-2.statsfile.txt 2> 2-1-2_map.log
 ```
 
-* Merge coverage, and normalize coverage with TPM       
+## Merge coverage, and normalize coverage with TPM       
 
 './mapping_stats/' is the storage folder of your mapping statistics files.       
 'samples_mapnum.txt' is a two columns tab-separated file: sample_id, total mapped reads (calculate from statsfile)   
@@ -70,8 +70,11 @@ k127_201593	metabat.113	0.00624759173329129	0.21964470673582845	3.18823133461074
 
 ```
 
-* Assign contigs into groups based on their normalized coverage distribution
+## Assign contigs into groups based on their normalized coverage distribution
 We pre-defined several groups combining the coverage patterns with geographical significance.
+![groups](./img/group.png)
+
+
 ```
 Rscript group_ctg_by_norm_cov.R
 ```
