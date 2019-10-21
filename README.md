@@ -102,7 +102,7 @@ k127_64248,metabat.179,PL_ALL,0.291172665336028,2.17412142117306,0.8964837606790
 
 * Gene prediction
 ```
-prodigal -i all_bins.ctg.fasta -f gff -p meta -o all_bins.ctg.genes -a all_bins.ctg.prodigal.gene.faa
+> prodigal -i all_bins.ctg.fasta -f gff -p meta -o all_bins.ctg.genes -a all_bins.ctg.prodigal.gene.faa
 ```
 * Get KEGG gene annotation results
 Upload 'all_bins.ctg.prodigal.gene.faa' to GhostKOALA (https://www.kegg.jp/ghostkoala/) to obtain gene-based KEGG annotation results 'gene_ko_anno_ghostkoala.txt'.
@@ -117,24 +117,25 @@ k127_10351_1
 k127_10351_2	K02849
 k127_10351_3
 ```
-* Download KEGG module database 'ko00002.keg' from the webiste: https://www.genome.jp/kegg-bin/get_htext?ko00002.keg
-* Calculate module abundance of groups with a MAG-centric view      
+* Download KEGG module database 'ko00002.keg' from KEGG webiste.     
 
-Our script 'calculate_module_abundance_per_group.py' will:
+* Calculate module abundance of groups with a MAG-centric view.      
+
+The script 'calculate_module_abundance_per_group.py' will:
 1) Obtain Kegg module information
 2) Convert gene-based KO annotation to contig-based KO annotation
 3) Detect existed modules by search KO overlaps
 4) Calculate module abundance for each group in a MAG-centric view
 5) Generate module abundance table for each group   
 
-Please notice that input coverage table '-cg' is supporting multiple samples with your own coverage-group table, but headers of first three columns need be : 'Contig_ID', 'Bin_ID', 'group'. 
+Please notice that input coverage table '-cg' is supporting multiple samples with your own coverage-group table, but headers of first three columns need to be : 'Contig_ID', 'Bin_ID', 'group'. 
 
 ```
-python calculate_module_abundance_per_group.py -gk gene_ko_anno_ghostkoala.txt -ko ko00002.keg -cg NORM_group.csv
+> python calculate_module_abundance_per_group.py -gk gene_ko_anno_ghostkoala.txt -ko ko00002.keg -cg NORM_group.csv
 ```
-It will generate an output file 'module_abundance_per_group.csv' to record each module's abundance per group.
+It will generate the final output file 'module_abundance_per_group.csv' to record each module's abundance per group.   
 ```
-└─[0] <git:(master 22756ed) > head module_abundance_per_group.csv
+> head module_abundance_per_group.csv
 module_id,AL,BO,LO,PL_ALL,PL_P1,PL_P2,PL_P3,PL_P4,PL_SUB,UN,module_anno
 M00119,14.547502498398673,18.540198037978385,3.2369715065271345,40.56229556414226,2.688729318142015,1.0998614178648407,1.1734430867038539,5.91916439234577,42.965435192662554,7.9435435001417165,"Pantothenate biosynthesis, valine/L-aspartate => pantothenate [PATH:map00770 map01100 map01110]"
 M00080,4.140475423558032,2.393736785159976,0.6677998871085606,4.614304865477866,0.2083344317997251,,0.46412165732875005,1.024715052006364,5.781767244396411,1.0437647814505975,"Lipopolysaccharide biosynthesis, inner core => outer core => O-antigen [PATH:map00540 map01100]"
@@ -142,3 +143,5 @@ M00237,5.360651244413878,47.096112636051515,3.518077128591841,93.01618715816905,
 M00022,13.722901906067653,8.974117749209022,2.3697324517044014,25.758456822434333,2.0382777580247344,1.4058187983433923,1.365257395536771,4.111569553305457,29.989880343651063,2.5787238704971926,"Shikimate pathway, phosphoenolpyruvate + erythrose-4P => chorismate [PATH:map00400 map01230 map01100 map01110 map01130]"
 M00335,17.772486666644905,32.879956599311726,3.122522192935662,34.791934112490004,2.2059218926102098,1.7320168349471106,1.1127508687096623,7.0285652320939365,33.894350511977485,5.9890065009252105,Sec (secretion) system [PATH:map03070] [BR:ko02044]
 ```
+Now you could evalulate and compare module's abundance across groups :)! 
+
